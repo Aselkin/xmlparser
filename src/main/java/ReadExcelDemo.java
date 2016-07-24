@@ -1,4 +1,3 @@
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -7,15 +6,14 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ReadExcelDemo {
     public static void main(String[] args) {
         try {
-            FileInputStream file = new FileInputStream(new File("B777ATA25.xlsx"));
-            FileInputStream fileata = new FileInputStream(new File("subata.xlsx"));
+            FileInputStream file = new FileInputStream(new File("B777 ATA25.xlsx"));
+            FileInputStream fileata = new FileInputStream(new File("subata_multi.xlsx"));
 
 
             //Create Workbook instance holding reference to .xlsx file
@@ -23,8 +21,22 @@ public class ReadExcelDemo {
             XSSFWorkbook wbsubata = new XSSFWorkbook(fileata);
 
             //Get first/desired sheet from the workbook
-            XSSFSheet sheet = workbook.getSheetAt(1);
-            XSSFSheet sheetata = wbsubata.getSheetAt(0);
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            XSSFSheet sheetata;
+            Integer qtywords = 1;
+            String patternType = "(\\d{2}-+\\d{2}-+\\d{2})";
+            if (sheet.getRow(1).getCell(6).getStringCellValue().trim().equals("B777")) {
+                sheetata = wbsubata.getSheetAt(1);
+                qtywords = 0;
+                patternType = "(\\d{2}-+\\d{2})";
+
+            } else {
+                sheetata = wbsubata.getSheetAt(0);
+            }
+
+
+            //sheet.getRow()
+
 
             deleteColumn(sheet, 25);
 
@@ -66,11 +78,17 @@ public class ReadExcelDemo {
                         }
 
 
-                        if (qtyWord > 1) {
-                            Pattern patternata = Pattern.compile("(\\d{2}-+\\d{2}-+\\d{2})");
+
+                        if (qtyWord > qtywords) {
+                            Pattern patternata = Pattern.compile(patternType);
                             Matcher matcherata = patternata.matcher(colA.getStringCellValue());
                             if (matcherata.find()) {
-                                cellYsh = matcherata.group(0).substring(0, 5).replace("-", "");
+                                String ata = matcherata.group(0).substring(0, 5).replace("-", "");
+                                if (!"not found".equals(cellYsh) && !cellYsh.contains(ata)) {
+                                    cellYsh += ", " + ata;
+                                } else {
+                                    cellYsh = ata;
+                                }
                                 System.out.println("Subata:" + cellYsh + "\nTEMPLATE:" + colY.getStringCellValue().toUpperCase() + "\nFOUND:" + allWords);
                             }
                         }
@@ -85,7 +103,7 @@ public class ReadExcelDemo {
             }
             file.close();
 
-            FileOutputStream out = new FileOutputStream(new File("B777ATA25.xlsx"));
+            FileOutputStream out = new FileOutputStream(new File("B777 ATA25.xlsx"));
             workbook.write(out);
             out.close();
         } catch (Exception e) {
