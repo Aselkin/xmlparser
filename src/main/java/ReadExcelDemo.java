@@ -35,8 +35,6 @@ public class ReadExcelDemo {
             }
 
 
-            //sheet.getRow()
-
 
             deleteColumn(sheet, 25);
 
@@ -49,11 +47,12 @@ public class ReadExcelDemo {
 
                 Cell colE = row.getCell(4);
                 Cell colY = row.getCell(24);
+                Cell colX = row.getCell(23);
                 Cell colL = row.getCell(11);
 
                 //System.out.println(colL);
 
-                if (colE == null || colY == null || colL == null) continue;
+                if (colE == null || colY == null || colL == null || colX == null) continue;
                 if (colL.getStringCellValue().equals("N")) continue;
 
                 String cellE = colE.getStringCellValue();
@@ -75,6 +74,10 @@ public class ReadExcelDemo {
                                 qtyWord++;
                                 allWords += word + " ";
                             }
+                            else if (allWords.equals("") && word.length() > 3 && colX.getStringCellValue().toUpperCase().contains(word) && !allWords.contains(word)) {
+                                qtyWord++;
+                                allWords += word + " ";
+                            }
                         }
 
 
@@ -92,6 +95,8 @@ public class ReadExcelDemo {
                                 System.out.println("Subata:" + cellYsh + "\nTEMPLATE:" + colY.getStringCellValue().toUpperCase() + "\nFOUND:" + allWords);
                             }
                         }
+
+
                     }
                 }
 //                System.out.println(cellYsh);
